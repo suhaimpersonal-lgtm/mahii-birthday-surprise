@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <title>A Little World Made for Mahii ✨</title>
+    
+    <!-- Google Fonts: Cormorant Garamond (Luxury Serif), Plus Jakarta Sans (Clean Modern Sans), Caveat (Handwritten) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Canvas Confetti for celebratory bursts -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Tone.js for gentle, royalty-free ambient music box synth & sound effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ivory: '#FCF9F6',
+                        cream: '#F7EFEA',
+                        blush: {
+                            light: '#FBE8EB',
+                            DEFAULT: '#F2C6CE',
+                            dark: '#D99BA7'
+                        },
+                        lavender: {
+                            light: '#F1ECF9',
+                            DEFAULT: '#DCD2EE',
+                            dark: '#B3A1D6'
+                        },
+                        champagne: {
+                            light: '#F7EEDB',
+                            DEFAULT: '#D4AF37',
+                            dark: '#B59124'
+                        },
+                        plum: {
+                            light: '#6D5465',
+                            DEFAULT: '#3B2838',
+                            dark: '#241622'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        hand: ['"Caveat"', 'cursive']
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 50px -12px rgba(59, 40, 56, 0.08)',
+                        'glow': '0 0 30px rgba(212, 175, 55, 0.28)',
+                        'blush-glow': '0 10px 35px -5px rgba(217, 155, 167, 0.45)',
+                        'paper': '0 25px 60px -15px rgba(59, 40, 56, 0.12), 0 0 1px 1px rgba(212, 175, 55, 0.15)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Editorial Aesthetics & Animations */
+        :root {
+            --bg-ivory: #FCF9F6;
+            --text-plum: #3B2838;
+            --gold: #D4AF37;
+        }
+
+        body {
+            background-color: var(--bg-ivory);
+            color: var(--text-plum);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Subtle Grain Texture Overlay for Editorial Luxury Feel */
+        .editorial-grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Ambient Gradients */
+        .bg-dreamy-intro {
+            background: radial-gradient(circle at 20% 20%, #FBE8EB 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, #F1ECF9 0%, transparent 50%),
+                        linear-gradient(135deg, #FCF9F6 0%, #F7EFEA 100%);
+        }
+
+        .bg-hero-dreamy {
+            background: radial-gradient(circle at 50% 15%, rgba(251, 232, 235, 0.9) 0%, transparent 55%),
+                        radial-gradient(circle at 15% 60%, rgba(241, 236, 249, 0.85) 0%, transparent 50%),
+                        radial-gradient(circle at 85% 75%, rgba(247, 238, 219, 0.7) 0%, transparent 50%),
+                        linear-gradient(180deg, #FCF9F6 0%, #F9F2F4 50%, #FCF9F6 100%);
+        }
+
+        /* Gold Shimmer Text */
+        .gold-glow-text {
+            text-shadow: 0 0 28px rgba(212, 175, 55, 0.32), 0 2px 10px rgba(217, 155, 167, 0.25);
+        }
+
+        /* Staggered Letter Reveal Animation */
+        .char-reveal {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(22px) scale(0.96);
+            filter: blur(4px);
+            transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                        filter 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .char-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        .hero-name-reveal {
+            opacity: 0;
+            transform: translateY(28px) scale(0.95);
+            filter: blur(6px);
+            transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hero-name-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        .hero-sub-reveal {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.9s ease, transform 0.9s ease;
+        }
+
+        .hero-sub-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Gentle Floating Animations */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        @keyframes floatReverse {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(8px) rotate(-3deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 10px 30px -5px rgba(217, 155, 167, 0.4), 0 0 15px rgba(212, 175, 55, 0.2); }
+            50% { box-shadow: 0 14px 40px -2px rgba(217, 155, 167, 0.65), 0 0 25px rgba(212, 175, 55, 0.4); }
+        }
+
+        .animate-float-slow {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
+
+        .animate-float-reverse {
+            animation: floatReverse 7s ease-in-out infinite;
+        }
+
+        .btn-glow-pulse {
+            animation: pulseGlow 3.5s infinite ease-in-out;
+        }
+
+        /* Candle Flame Animation */
+        @keyframes flicker {
+            0%, 100% { transform: scale(1) rotate(-1deg); opacity: 0.95; }
+            25% { transform: scale(1.06, 0.96) rotate(2deg); opacity: 1; }
+            50% { transform: scale(0.95, 1.05) rotate(-2deg); opacity: 0.9; }
+            75% { transform: scale(1.04, 0.98) rotate(1deg); opacity: 1; }
+        }
+
+        .candle-flame {
+            transform-origin: center bottom;
+            animation: flicker 1.4s infinite ease-in-out;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .candle-flame.blown-out {
+            opacity: 0 !important;
+            transform: scale(0) translateY(-10px) !important;
+            animation: none;
+        }
+
+        /* Smoke puff after blowing out candles */
+        @keyframes smokeRise {
+            0% { opacity: 0; transform: translateY(0) scale(0.6); }
+            30% { opacity: 0.65; }
+            100% { opacity: 0; transform: translateY(-28px) scale(1.5); }
+        }
+
+        .candle-smoke {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .candle-smoke.active {
+            animation: smokeRise 2.2s ease-out forwards;
+        }
+
+        /* 3D Envelope Styling */
+        .envelope-wrapper {
+            perspective: 1200px;
+        }
+
+        .envelope-flap {
+            transform-origin: top center;
+            transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s linear 0.3s;
+            z-index: 30;
+        }
+
+        .envelope-wrapper.is-open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 5;
+        }
+
+        .wax-seal {
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+        }
+
+        .envelope-wrapper.is-open .wax-seal {
+            transform: scale(0.6) translateY(-20px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .letter-peek {
+            transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+        }
+
+        .envelope-wrapper.is-open .letter-peek {
+            transform: translateY(-65px);
+        }
+
+        /* Typewriter Cursor */
+        @keyframes blinkCursor {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.15em;
+            background-color: #D4AF37;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+            animation: blinkCursor 0.85s infinite;
+        }
+
+        /* Lined Paper Subtle Texture */
+        .stationery-paper {
+            background-color: #FFFDFB;
+            background-image: linear-gradient(rgba(212, 175, 55, 0.09) 1px, transparent 1px);
+            background-size: 100% 2.15rem;
+            line-height: 2.15rem;
+        }
+
+        /* Scroll Reveal Utility */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal-on-scroll.is-revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Interactive Card Hover */
+        .mahii-card {
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease;
+        }
+        .mahii-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 50px -12px rgba(59, 40, 56, 0.13);
+        }
+
+        /* Realistic Night Sky Section Styles */
+        .night-sky-backdrop {
+            background:
+                radial-gradient(ellipse 85% 55% at 50% 105%, rgba(30, 26, 58, 0.72) 0%, transparent 65%),
+                radial-gradient(ellipse 70% 45% at 22% 28%, rgba(45, 34, 82, 0.42) 0%, transparent 60%),
+                radial-gradient(ellipse 65% 40% at 78% 72%, rgba(28, 42, 78, 0.45) 0%, transparent 60%),
+                linear-gradient(180deg, #04060E 0%, #080C1C 45%, #0D1128 80%, #070914 100%);
+        }
+
+        /* Subtle Diagonal Milky Way & Cosmic Dust Layer */
+        .milky-way-band {
+            background:
+                radial-gradient(ellipse 90% 24% at 50% 50%, rgba(195, 185, 235, 0.11) 0%, rgba(125, 118, 185, 0.06) 45%, transparent 78%),
+                radial-gradient(ellipse 60% 14% at 48% 52%, rgba(235, 228, 255, 0.08) 0%, transparent 70%);
+            transform: rotate(-24deg) scale(1.35);
+            filter: blur(18px);
+        }
+
+        .moonlight-heading {
+            color: #F8F9FF;
+            text-shadow:
+                0 0 24px rgba(215, 210, 255, 0.35),
+                0 0 60px rgba(167, 155, 235, 0.22);
+        }
+
+        .moonlight-subtext {
+            color: rgba(232, 235, 252, 0.84);
+            text-shadow: 0 2px 14px rgba(5, 8, 20, 0.85);
+        }
+
+        /* Luxurious Lavender & Silver Glow Button */
+        .wish-sky-btn {
+            background: linear-gradient(135deg, rgba(226, 220, 255, 0.16) 0%, rgba(179, 161, 214, 0.22) 50%, rgba(235, 238, 255, 0.15) 100%);
+            border: 1px solid rgba(224, 218, 255, 0.45);
+            box-shadow:
+                0 0 28px rgba(185, 170, 235, 0.28),
+                inset 0 0 18px rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .wish-sky-btn:hover {
+            border-color: rgba(240, 236, 255, 0.8);
+            box-shadow:
+                0 0 38px rgba(198, 184, 248, 0.48),
+                0 0 70px rgba(165, 150, 225, 0.24),
+                inset 0 0 22px rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(235, 230, 255, 0.24) 0%, rgba(188, 170, 225, 0.3) 50%, rgba(242, 244, 255, 0.22) 100%);
+        }
+
+        .wish-sky-btn.wish-sent {
+            background: linear-gradient(135deg, rgba(205, 194, 245, 0.22) 0%, rgba(155, 142, 208, 0.26) 100%);
+            border-color: rgba(230, 225, 255, 0.6);
+            box-shadow: 0 0 34px rgba(195, 182, 245, 0.38), inset 0 0 16px rgba(255, 255, 255, 0.16);
+        }
+
+        /* Respect Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .char-reveal, .hero-name-reveal, .hero-sub-reveal, .reveal-on-scroll {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-blush selection:text-plum">
+
+    <!-- Subtle Editorial Film Grain -->
+    <div class="editorial-grain" aria-hidden="true"></div>
+
+    <!-- Ambient Floating Particles Canvas (Stars, Petals, Sparkles) -->
+    <canvas id="ambient-canvas" class="fixed inset-0 pointer-events-none z-10" aria-hidden="true"></canvas>
+
+    <!-- Optional Royalty-Free Audio / Music Box Controller -->
+    <!-- 
+      NOTE FOR CUSTOM AUDIO: 
+      By default, this uses Tone.js to generate a soft, gentle, royalty-free music box lullaby melody 
+      so there are zero broken audio links or copyright issues.
+      If you wish to use your own royalty-free MP3 file later, simply add an <audio id="custom-bgm" src="your-music.mp3" loop></audio> 
+      and trigger it inside toggleAudio() in the script below!
+    -->
+    <div class="fixed top-4 right-4 sm:top-6 sm:right-6 z-40">
+        <button id="audio-toggle-btn" 
+                type="button"
+                aria-label="Toggle gentle background melody"
+                class="group flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-champagne/30 shadow-soft text-plum hover:bg-white transition-all duration-300 active:scale-95">
+            <span id="audio-icon-waves" class="flex items-end gap-0.5 h-3.5 w-3.5 justify-center">
+                <span class="w-0.5 h-1.5 bg-champagne rounded-full transition-all duration-300" id="bar-1"></span>
+                <span class="w-0.5 h-3 bg-blush-dark rounded-full transition-all duration-300" id="bar-2"></span>
+                <span class="w-0.5 h-2 bg-champagne rounded-full transition-all duration-300" id="bar-3"></span>
+            </span>
+            <span id="audio-label" class="text-xs font-medium tracking-wider uppercase text-plum/80">Sound Off</span>
+        </button>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- 2. INTRODUCTION SCREEN — THE FIRST IMPRESSION                         -->
+    <!-- ===================================================================== -->
+    <section id="intro-screen" 
+             class="fixed inset-0 z-30 flex flex-col items-center justify-center px-6 text-center bg-dreamy-intro transition-all duration-1000 ease-in-out">
+        
+        <!-- Delicate Corner Botanical / Editorial Accents -->
+        <div class="absolute top-6 left-6 sm:top-10 sm:left-10 w-16 h-16 sm:w-24 sm:h-24 border-t border-l border-champagne/35 rounded-tl-3xl pointer-events-none"></div>
+        <div class="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 w-16 h-16 sm:w-24 sm:h-24 border-b border-r border-champagne/35 rounded-br-3xl pointer-events-none"></div>
+
+        <!-- Floating Decorative Mini Flower SVG -->
+        <div class="mb-6 animate-float-slow text-blush-dark/80">
+            <svg class="w-10 h-10 mx-auto" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 6C26.5 13 31 15.5 38 14C34 20.5 35.5 25.5 41 30C33.5 31 30 35 30 42C24.5 36.5 19.5 36.5 14 42C14 35 10.5 31 3 30C8.5 25.5 10 20.5 6 14C13 15.5 17.5 13 24 6Z" fill="#F2C6CE" fill-opacity="0.45" stroke="#D4AF37" stroke-width="1.2"/>
+                <circle cx="24" cy="24" r="3.5" fill="#D4AF37" fill-opacity="0.7"/>
+            </svg>
+        </div>
+
+        <div class="max-w-xl mx-auto relative z-10">
+            <p class="text-xs sm:text-sm tracking-[0.28em] uppercase text-plum-light font-medium mb-4">
+                A Little World Made for Mahii
+            </p>
+            
+            <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl font-semibold tracking-wide text-plum leading-tight mb-5">
+                A LITTLE SURPRISE FOR YOU...
+            </h1>
+            
+            <p class="font-sans text-base sm:text-lg text-plum-light/90 font-light max-w-md mx-auto mb-10 leading-relaxed">
+                Someone made a little corner of the internet just for you. ♡
+            </p>
+
+            <button id="open-surprise-btn" 
+                    type="button"
+                    class="btn-glow-pulse group relative inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-4.5 rounded-full bg-gradient-to-r from-[#E8B4BE] via-[#E2A9B6] to-[#D99BA7] text-white font-medium text-sm sm:text-base tracking-[0.16em] uppercase shadow-blush-glow hover:brightness-105 active:scale-95 transition-all duration-300 cursor-pointer">
+                <span class="relative z-10 flex items-center gap-2.5">
+                    <span>OPEN YOUR SURPRISE ✨</span>
+                </span>
+                <span class="absolute inset-0 rounded-full border border-white/40 pointer-events-none"></span>
+            </button>
+        </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- MAIN CELEBRATION STORY EXPERIENCE (Hidden until surprise is opened)   -->
+    <!-- ===================================================================== -->
+    <main id="main-experience" class="hidden opacity-0 transition-opacity duration-1000 relative z-20">
+
+        <!-- ================================================================= -->
+        <!-- 3. MAIN BIRTHDAY HERO SECTION                                     -->
+        <!-- ================================================================= -->
+        <section id="hero-section" class="relative min-h-screen flex flex-col items-center justify-center px-5 pt-24 pb-16 bg-hero-dreamy text-center overflow-hidden">
+            
+            <!-- Floating Decorative Botanical & Star Elements -->
+            <div class="absolute top-16 left-6 sm:left-16 text-champagne/40 animate-float-slow pointer-events-none" aria-hidden="true">
+                <svg class="w-8 h-8 sm:w-12 sm:h-12" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1L14.4 9.6L23 12L14.4 14.4L12 23L9.6 14.4L1 12L9.6 9.6L12 1Z"/>
+                </svg>
+            </div>
+            <div class="absolute bottom-24 right-6 sm:right-20 text-blush-dark/40 animate-float-reverse pointer-events-none" aria-hidden="true">
+                <svg class="w-10 h-10 sm:w-14 sm:h-14" viewBox="0 0 48 48" fill="none">
+                    <path d="M24 6C26.5 13 31 15.5 38 14C34 20.5 35.5 25.5 41 30C33.5 31 30 35 30 42C24.5 36.5 19.5 36.5 14 42C14 35 10.5 31 3 30C8.5 25.5 10 20.5 6 14C13 15.5 17.5 13 24 6Z" fill="currentColor"/>
+                </svg>
+            </div>
+
+            <div class="max-w-4xl mx-auto relative z-10">
+                <p id="hero-tag" class="hero-sub-reveal text-xs sm:text-sm tracking-[0.3em] uppercase text-plum-light font-medium mb-4">
+                    A Special Day • A Special Friendship
+                </p>
+
+                <!-- Staggered Letter-by-Letter Headline -->
+                <h1 id="hero-happy-birthday" 
+                    aria-label="HAPPY BIRTHDAY"
+                    class="font-serif text-2xl sm:text-4xl md:text-5xl font-medium tracking-[0.22em] text-plum/90 mb-2 sm:mb-3">
+                    HAPPY BIRTHDAY
+                </h1>
+
+                <!-- Main Name with Golden Glow -->
+                <div id="hero-menahil" class="hero-name-reveal my-2 sm:my-3">
+                    <span class="font-serif text-6xl sm:text-8xl md:text-9xl font-semibold tracking-wide text-plum gold-glow-text block leading-none">
+                        MENAHIL
+                    </span>
+                </div>
+
+                <!-- Nickname Reveal -->
+                <p id="hero-aka" class="hero-sub-reveal font-hand text-3xl sm:text-4xl md:text-5xl text-blush-dark mt-2 mb-6">
+                    aka Mahii ♡
+                </p>
+
+                <!-- Decorative Divider -->
+                <div id="hero-divider" class="hero-sub-reveal flex items-center justify-center gap-3 mb-6">
+                    <span class="w-12 h-px bg-champagne/50"></span>
+                    <span class="text-champagne text-xs">✦</span>
+                    <span class="w-12 h-px bg-champagne/50"></span>
+                </div>
+
+                <p id="hero-subtitle" class="hero-sub-reveal font-sans text-base sm:text-lg text-plum-light font-light max-w-md mx-auto mb-12">
+                    Today, this little world is all about you.
+                </p>
+
+                <!-- ========================================================= -->
+                <!-- 4. INTERACTIVE BIRTHDAY CAKE                              -->
+                <!-- ========================================================= -->
+                <div id="cake-container" class="hero-sub-reveal max-w-sm mx-auto pt-2">
+                    <div id="cake-interactive-area" 
+                         role="button" 
+                         tabindex="0"
+                         aria-label="Interactive birthday cake. Click or tap to blow out the candles and make a wish."
+                         class="group relative cursor-pointer select-none mx-auto w-64 sm:w-72 transition-transform duration-300 hover:scale-[1.03] active:scale-95">
+                        
+                        <!-- Custom Multi-Tier Editorial Pastel Cake SVG -->
+                        <svg viewBox="0 0 300 280" class="w-full h-auto drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Soft Ambient Glow Behind Cake -->
+                            <circle cx="150" cy="145" r="105" fill="url(#cakeGlow)" />
+
+                            <!-- Cake Stand -->
+                            <ellipse cx="150" cy="248" rx="108" ry="12" fill="#EADCE2" />
+                            <path d="M132 232H168L176 248H124L132 232Z" fill="#DFC8D2" />
+                            <ellipse cx="150" cy="232" rx="116" ry="11" fill="#FFFDFB" stroke="#D4AF37" stroke-width="1.2" />
+
+                            <!-- Bottom Tier -->
+                            <rect x="64" y="172" width="172" height="58" rx="14" fill="#F8DDE2" />
+                            <path d="M64 186C78 196 92 180 106 190C120 200 135 182 150 192C165 202 180 182 194 190C208 198 222 184 236 190V178C236 172 230 168 222 168H78C70 168 64 172 64 178V186Z" fill="#FFFDFB" />
+                            <!-- Gold Ribbon Trim -->
+                            <rect x="64" y="222" width="172" height="4" rx="2" fill="#D4AF37" fill-opacity="0.55" />
+
+                            <!-- Top Tier -->
+                            <rect x="92" y="116" width="116" height="54" rx="12" fill="#EAE2F8" />
+                            <path d="M92 128C103 137 114 123 125 132C136 141 148 124 160 133C172 142 184 125 196 132C202 135 206 132 208 130V122C208 117 203 113 196 113H104C97 113 92 117 92 122V128Z" fill="#FFFDFB" />
+
+                            <!-- Decorative Tiny Pastel Flowers on Cake -->
+                            <g transform="translate(88, 204)">
+                                <circle cx="0" cy="0" r="5" fill="#FFFDFB" />
+                                <circle cx="0" cy="0" r="2" fill="#D4AF37" />
+                            </g>
+                            <g transform="translate(150, 208)">
+                                <circle cx="0" cy="0" r="6" fill="#FFFDFB" />
+                                <circle cx="0" cy="0" r="2.2" fill="#D99BA7" />
+                            </g>
+                            <g transform="translate(212, 204)">
+                                <circle cx="0" cy="0" r="5" fill="#FFFDFB" />
+                                <circle cx="0" cy="0" r="2" fill="#D4AF37" />
+                            </g>
+                            <g transform="translate(122, 152)">
+                                <circle cx="0" cy="0" r="4.5" fill="#F2C6CE" />
+                                <circle cx="0" cy="0" r="1.8" fill="#FFFDFB" />
+                            </g>
+                            <g transform="translate(178, 152)">
+                                <circle cx="0" cy="0" r="4.5" fill="#F2C6CE" />
+                                <circle cx="0" cy="0" r="1.8" fill="#FFFDFB" />
+                            </g>
+
+                            <!-- Three Elegant Birthday Candles -->
+                            <!-- Left Candle -->
+                            <rect x="115" y="80" width="7" height="34" rx="3.5" fill="#FFFDFB" stroke="#D4AF37" stroke-width="1" />
+                            <path d="M115 90L122 94M115 100L122 104" stroke="#F2C6CE" stroke-width="1.5" />
+                            <line x1="118.5" y1="75" x2="118.5" y2="80" stroke="#3B2838" stroke-width="1.5" />
+                            <path class="candle-flame" d="M118.5 55C118.5 55 124.5 63.5 124.5 68.5C124.5 72 121.8 74.5 118.5 74.5C115.2 74.5 112.5 72 112.5 68.5C112.5 63.5 118.5 55 118.5 55Z" fill="url(#flameGrad)" />
+                            <circle class="candle-smoke" cx="118.5" cy="66" r="4" fill="#B8AEB5" />
+
+                            <!-- Center Candle (Slightly Taller) -->
+                            <rect x="146.5" y="72" width="7" height="42" rx="3.5" fill="#FFFDFB" stroke="#D4AF37" stroke-width="1" />
+                            <path d="M146.5 84L153.5 88M146.5 96L153.5 100" stroke="#D4AF37" stroke-width="1.5" />
+                            <line x1="150" y1="67" x2="150" y2="72" stroke="#3B2838" stroke-width="1.5" />
+                            <path class="candle-flame" d="M150 46C150 46 156.5 55 156.5 60.5C156.5 64.2 153.6 67 150 67C146.4 67 143.5 64.2 143.5 60.5C143.5 55 150 46 150 46Z" fill="url(#flameGrad)" />
+                            <circle class="candle-smoke" cx="150" cy="58" r="4.5" fill="#B8AEB5" />
+
+                            <!-- Right Candle -->
+                            <rect x="178" y="80" width="7" height="34" rx="3.5" fill="#FFFDFB" stroke="#D4AF37" stroke-width="1" />
+                            <path d="M178 90L185 94M178 100L185 104" stroke="#F2C6CE" stroke-width="1.5" />
+                            <line x1="181.5" y1="75" x2="181.5" y2="80" stroke="#3B2838" stroke-width="1.5" />
+                            <path class="candle-flame" d="M181.5 55C181.5 55 187.5 63.5 187.5 68.5C187.5 72 184.8 74.5 181.5 74.5C178.2 74.5 175.5 72 175.5 68.5C175.5 63.5 181.5 55 181.5 55Z" fill="url(#flameGrad)" />
+                            <circle class="candle-smoke" cx="181.5" cy="66" r="4" fill="#B8AEB5" />
+
+                            <defs>
+                                <radialGradient id="cakeGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(150 145) rotate(90) scale(105)">
+                                    <stop stop-color="#F7EEDB" stop-opacity="0.85" />
+                                    <stop offset="1" stop-color="#F7EEDB" stop-opacity="0" />
+                                </radialGradient>
+                                <linearGradient id="flameGrad" x1="150" y1="46" x2="150" y2="74" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#FFF7D6" />
+                                    <stop offset="0.5" stop-color="#F6C453" />
+                                    <stop offset="1" stop-color="#E58B4E" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+
+                    <p id="cake-instruction" class="font-serif italic text-xl sm:text-2xl text-plum mt-2 transition-all duration-300">
+                        Make a little birthday wish... 🕯️
+                    </p>
+                    <p id="cake-sub-hint" class="text-xs tracking-widest uppercase text-plum-light/70 mt-1">
+                        (Tap the cake to blow out the candles)
+                    </p>
+
+                    <div id="cake-wish-message" class="hidden opacity-0 transform translate-y-2 transition-all duration-700 mt-4 px-5 py-3 rounded-2xl bg-white/75 backdrop-blur-sm border border-champagne/30 shadow-soft">
+                        <p class="font-serif text-lg sm:text-xl text-plum font-medium">
+                            May all your little wishes find their way to you. ✨
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 5. PERSONAL BIRTHDAY LETTER — TYPEWRITER ANIMATION                -->
+        <!-- ================================================================= -->
+        <section id="letter-section" class="py-20 sm:py-28 px-5 bg-ivory relative">
+            <div class="max-w-2xl mx-auto text-center reveal-on-scroll">
+                
+                <p class="text-xs tracking-[0.28em] uppercase text-plum-light font-medium mb-3">
+                    From Suhaim
+                </p>
+                <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-plum mb-10">
+                    A LITTLE LETTER FOR YOU
+                </h2>
+
+                <!-- Stage 1: Interactive Wax-Sealed Envelope -->
+                <div id="envelope-stage" class="flex flex-col items-center">
+                    <div id="envelope-box" class="envelope-wrapper relative w-72 sm:w-88 h-48 sm:h-56 mx-auto mb-8 cursor-pointer select-none">
+                        <!-- Envelope Back -->
+                        <div class="absolute inset-0 rounded-2xl bg-[#EFE4DC] border border-champagne/30 shadow-soft"></div>
+
+                        <!-- Peeking Letter Inside -->
+                        <div class="letter-peek absolute inset-x-4 top-3 bottom-3 rounded-xl bg-[#FFFDFB] border border-champagne/20 p-4 flex flex-col items-center justify-start shadow-sm z-10">
+                            <span class="font-hand text-xl text-plum-light">For Mahii ♡</span>
+                            <div class="w-16 h-px bg-champagne/40 my-1.5"></div>
+                            <div class="w-3/4 h-1.5 bg-cream rounded-full mb-1.5"></div>
+                            <div class="w-1/2 h-1.5 bg-cream rounded-full"></div>
+                        </div>
+
+                        <!-- Envelope Front Pocket Flaps -->
+                        <svg class="absolute inset-0 w-full h-full z-20 pointer-events-none rounded-2xl" viewBox="0 0 320 200" preserveAspectRatio="none">
+                            <path d="M0 0L160 112L0 200V0Z" fill="#F6ECE5" />
+                            <path d="M320 0L160 112L320 200V0Z" fill="#F2E6DD" />
+                            <path d="M0 200L160 102L320 200H0Z" fill="#F9F1EC" stroke="#D4AF37" stroke-opacity="0.25" stroke-width="1" />
+                        </svg>
+
+                        <!-- Envelope Top Flap -->
+                        <svg class="envelope-flap absolute inset-x-0 top-0 w-full h-32 pointer-events-none" viewBox="0 0 320 125" preserveAspectRatio="none">
+                            <path d="M0 0H320L160 118L0 0Z" fill="#EFE2D9" stroke="#D4AF37" stroke-opacity="0.3" stroke-width="1" />
+                        </svg>
+
+                        <!-- Wax-Seal Heart -->
+                        <div class="wax-seal absolute left-1/2 top-[54%] -translate-x-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-gradient-to-br from-[#DF9AA7] to-[#C87D8B] shadow-md border border-white/40 flex items-center justify-center text-white text-lg">
+                            ♡
+                        </div>
+                    </div>
+
+                    <button id="open-letter-btn" 
+                            type="button"
+                            class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-plum text-ivory font-medium text-xs sm:text-sm tracking-[0.18em] uppercase shadow-soft hover:bg-plum-light active:scale-95 transition-all duration-300 cursor-pointer">
+                        <span>OPEN YOUR LETTER 💌</span>
+                    </button>
+                </div>
+
+                <!-- Stage 2: Unfolded Stationery Paper with Typewriter Animation -->
+                <div id="letter-paper-stage" class="hidden opacity-0 transform translate-y-6 transition-all duration-700 text-left">
+                    <div class="stationery-paper relative rounded-3xl p-6 sm:p-10 md:p-12 shadow-paper border border-champagne/25 overflow-hidden">
+                        
+                        <!-- Subtle Floral Corner Watermark -->
+                        <div class="absolute top-4 right-5 text-blush-dark/35 pointer-events-none" aria-hidden="true">
+                            <svg class="w-10 h-10" viewBox="0 0 48 48" fill="none">
+                                <path d="M24 6C26.5 13 31 15.5 38 14C34 20.5 35.5 25.5 41 30C33.5 31 30 35 30 42C24.5 36.5 19.5 36.5 14 42C14 35 10.5 31 3 30C8.5 25.5 10 20.5 6 14C13 15.5 17.5 13 24 6Z" fill="currentColor"/>
+                            </svg>
+                        </div>
+
+                        <!-- Typewriter Text Output -->
+                        <div class="font-sans text-[15px] sm:text-[17px] text-plum/90 font-normal whitespace-pre-line tracking-normal">
+                            <span id="typewriter-output"></span><span id="typewriter-cursor" class="typing-cursor"></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 6. A LITTLE SECTION ABOUT MAHII                                   -->
+        <!-- ================================================================= -->
+        <section id="about-mahii-section" class="py-20 sm:py-28 px-5 bg-gradient-to-b from-ivory via-cream/60 to-ivory">
+            <div class="max-w-5xl mx-auto">
+                
+                <div class="text-center mb-14 reveal-on-scroll">
+                    <p class="text-xs tracking-[0.28em] uppercase text-plum-light font-medium mb-3">
+                        The Mahii Edition
+                    </p>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-plum">
+                        THINGS THAT MAKE YOU, YOU ✨
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                    
+                    <!-- CARD 1: Sweet Mode -->
+                    <article class="mahii-card reveal-on-scroll rounded-3xl p-7 sm:p-8 bg-blush-light/65 border border-blush/50 shadow-soft flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-white/85 flex items-center justify-center mb-6 shadow-sm text-blush-dark">
+                                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                    <path d="M12 3C13.5 7 16.5 8.5 20.5 7.5C18 11 19 14 22 16.5C17.5 17 15.5 19.5 15.5 23C12.5 20 9.5 20 6.5 23C6.5 19.5 4.5 17 0 16.5C3 14 4 11 1.5 7.5C5.5 8.5 8.5 7 12 3Z" fill="#F2C6CE" fill-opacity="0.45"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-serif text-2xl sm:text-[26px] font-semibold text-plum mb-3">
+                                Sweet Mode 🌷
+                            </h3>
+                            <p class="font-sans text-sm sm:text-base text-plum-light leading-relaxed">
+                                That unexpectedly sweet side of yours that makes conversations feel special.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-blush/40 flex items-center justify-between text-xs uppercase tracking-widest text-plum-light/70">
+                            <span>01 / Softness</span>
+                            <span>♡</span>
+                        </div>
+                    </article>
+
+                    <!-- CARD 2: Attitude Mode -->
+                    <article class="mahii-card reveal-on-scroll rounded-3xl p-7 sm:p-8 bg-lavender-light/75 border border-lavender/60 shadow-soft flex flex-col justify-between" style="transition-delay: 120ms;">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-white/85 flex items-center justify-center mb-6 shadow-sm text-plum">
+                                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                    <path d="M4 16L6 7L12 11L18 7L20 16H4Z" fill="#DCD2EE" fill-opacity="0.6" stroke-linejoin="round"/>
+                                    <line x1="4" y1="19" x2="20" y2="19" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-serif text-2xl sm:text-[26px] font-semibold text-plum mb-3">
+                                Attitude Mode 😎
+                            </h3>
+                            <p class="font-sans text-sm sm:text-base text-plum-light leading-relaxed">
+                                One second sweet, next second full attitude. The Mahii special edition. 😂
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-lavender/50 flex items-center justify-between text-xs uppercase tracking-widest text-plum-light/70">
+                            <span>02 / Iconic</span>
+                            <span>✦</span>
+                        </div>
+                    </article>
+
+                    <!-- CARD 3: Quick Replies -->
+                    <article class="mahii-card reveal-on-scroll rounded-3xl p-7 sm:p-8 bg-champagne-light/75 border border-champagne/30 shadow-soft flex flex-col justify-between" style="transition-delay: 240ms;">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-white/85 flex items-center justify-center mb-6 shadow-sm text-champagne-dark">
+                                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                    <path d="M13 2L4 14H12L11 22L20 10H12L13 2Z" fill="#F7EEDB" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-serif text-2xl sm:text-[26px] font-semibold text-plum mb-3">
+                                Quick Replies ⚡
+                            </h3>
+                            <p class="font-sans text-sm sm:text-base text-plum-light leading-relaxed">
+                                Online = Instant replies. Honestly, that's a pretty cool superpower.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-champagne/25 flex items-center justify-between text-xs uppercase tracking-widest text-plum-light/70">
+                            <span>03 / Speed</span>
+                            <span>✧</span>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 7. A SMALL WISH FOR YOU — REALISTIC NIGHT SKY EXPERIENCE          -->
+        <!-- ================================================================= -->
+        <section id="wish-section" class="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center py-28 sm:py-36 px-5 night-sky-backdrop overflow-hidden select-none">
+            
+            <!-- Subtle Atmospheric Top & Bottom Transitions -->
+            <div class="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-ivory/10 to-transparent pointer-events-none z-10"></div>
+
+            <!-- Deep Astronomical Milky Way & Nebula Dust Glow -->
+            <div class="milky-way-band absolute inset-0 pointer-events-none z-0" aria-hidden="true"></div>
+
+            <!-- Realistic High-DPI Night Sky Starfield & Shooting Star Canvas -->
+            <canvas id="night-sky-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
+
+            <!-- Magical Sparkle Burst Layer (Triggered on Wish Click) -->
+            <div id="wish-magic-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-20"></div>
+
+            <!-- Centered Editorial Content Under the Stars -->
+            <div class="max-w-2xl mx-auto text-center relative z-20 reveal-on-scroll px-2 sm:px-6">
+                
+                <!-- Delicate Crescent / Starlight Eyebrow -->
+                <div class="inline-flex items-center gap-2.5 mb-6 opacity-80">
+                    <span class="w-8 h-px bg-gradient-to-r from-transparent to-[#DCD2EE]/60"></span>
+                    <svg class="w-3.5 h-3.5 text-[#E8E4FF]" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 1L14.4 9.6L23 12L14.4 14.4L12 23L9.6 14.4L1 12L9.6 9.6L12 1Z"/>
+                    </svg>
+                    <span class="w-8 h-px bg-gradient-to-l from-transparent to-[#DCD2EE]/60"></span>
+                </div>
+
+                <h2 class="font-serif text-3xl sm:text-5xl md:text-6xl font-semibold tracking-[0.06em] moonlight-heading mb-7">
+                    A LITTLE WISH FOR YOU ✨
+                </h2>
+
+                <div class="font-sans text-base sm:text-lg md:text-xl moonlight-subtext font-light space-y-2.5 mb-12 leading-relaxed max-w-md mx-auto">
+                    <p>Close your eyes for a second...</p>
+                    <p>Think of something you've always wished for.</p>
+                </div>
+
+                <button id="make-wish-btn" 
+                        type="button"
+                        class="wish-sky-btn relative z-20 inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-4.5 rounded-full text-white font-medium text-xs sm:text-sm tracking-[0.18em] uppercase active:scale-95 transition-all duration-500 cursor-pointer">
+                    <span>MAKE MY WISH ✨</span>
+                </button>
+
+                <!-- Soft Moonlight Revealed Message -->
+                <div id="wish-blessing-reveal" class="hidden opacity-0 transform translate-y-4 transition-all duration-1000 ease-out mt-14 pt-10 border-t border-[#DCD2EE]/20 max-w-lg mx-auto">
+                    <p class="font-serif italic text-2xl sm:text-3xl md:text-[34px] text-[#F7F6FF] moonlight-heading leading-relaxed">
+                        "May the universe bring you closer to everything that makes you happy."
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 8. FINAL BIRTHDAY SCREEN                                          -->
+        <!-- ================================================================= -->
+        <footer id="final-section" class="relative py-24 sm:py-32 px-5 bg-hero-dreamy text-center overflow-hidden border-t border-champagne/15">
+            
+            <div class="max-w-2xl mx-auto relative z-10 reveal-on-scroll">
+                
+                <p class="text-xs sm:text-sm tracking-[0.3em] uppercase text-plum-light font-medium mb-4">
+                    ONCE AGAIN...
+                </p>
+
+                <h2 class="font-serif text-4xl sm:text-6xl md:text-7xl font-semibold text-plum gold-glow-text leading-tight mb-6">
+                    HAPPY BIRTHDAY, MAHII! 🎂
+                </h2>
+
+                <p class="font-sans text-base sm:text-lg text-plum-light font-light max-w-md mx-auto mb-10 leading-relaxed">
+                    Stay happy. Keep smiling. And never lose your special vibe.
+                </p>
+
+                <div class="w-16 h-px bg-champagne/50 mx-auto mb-8"></div>
+
+                <div class="mb-12">
+                    <p class="font-sans text-xs tracking-[0.2em] uppercase text-plum-light/80 mb-2">
+                        With best wishes,
+                    </p>
+                    <p class="font-hand text-3xl sm:text-4xl text-plum">
+                        SUHAIM ♡
+                    </p>
+                </div>
+
+                <button id="replay-btn" 
+                        type="button"
+                        class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/80 backdrop-blur-sm border border-plum/15 text-plum text-xs font-medium tracking-[0.18em] uppercase shadow-sm hover:bg-white hover:border-champagne/50 active:scale-95 transition-all duration-300 cursor-pointer">
+                    <span>REPLAY THE SURPRISE ↻</span>
+                </button>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- JAVASCRIPT: INTERACTIONS, ANIMATIONS, TYPEWRITER & AMBIENT AUDIO      -->
+    <!-- ===================================================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            /* ---------------------------------------------------------------
+             * 1. DOM ELEMENT REFERENCES & STATE
+             * --------------------------------------------------------------- */
+            const introScreen = document.getElementById('intro-screen');
+            const openSurpriseBtn = document.getElementById('open-surprise-btn');
+            const mainExperience = document.getElementById('main-experience');
+
+            // Hero Elements
+            const heroTag = document.getElementById('hero-tag');
+            const heroHappyBirthday = document.getElementById('hero-happy-birthday');
+            const heroMenahil = document.getElementById('hero-menahil');
+            const heroAka = document.getElementById('hero-aka');
+            const heroDivider = document.getElementById('hero-divider');
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            const cakeContainer = document.getElementById('cake-container');
+
+            // Cake Elements
+            const cakeInteractiveArea = document.getElementById('cake-interactive-area');
+            const candleFlames = document.querySelectorAll('.candle-flame');
+            const candleSmokes = document.querySelectorAll('.candle-smoke');
+            const cakeInstruction = document.getElementById('cake-instruction');
+            const cakeSubHint = document.getElementById('cake-sub-hint');
+            const cakeWishMessage = document.getElementById('cake-wish-message');
+            let candlesBlown = false;
+
+            // Letter Elements
+            const envelopeStage = document.getElementById('envelope-stage');
+            const envelopeBox = document.getElementById('envelope-box');
+            const openLetterBtn = document.getElementById('open-letter-btn');
+            const letterPaperStage = document.getElementById('letter-paper-stage');
+            const typewriterOutput = document.getElementById('typewriter-output');
+            let letterOpened = false;
+            let typewriterTimeout = null;
+
+            // Wish Elements
+            const makeWishBtn = document.getElementById('make-wish-btn');
+            const wishMagicLayer = document.getElementById('wish-magic-layer');
+            const wishBlessingReveal = document.getElementById('wish-blessing-reveal');
+            let wishMade = false;
+
+            // Replay & Audio Elements
+            const replayBtn = document.getElementById('replay-btn');
+            const audioToggleBtn = document.getElementById('audio-toggle-btn');
+            const audioLabel = document.getElementById('audio-label');
+            const bar1 = document.getElementById('bar-1');
+            const bar2 = document.getElementById('bar-2');
+            const bar3 = document.getElementById('bar-3');
+
+            /* ---------------------------------------------------------------
+             * 2. EXACT PERSONAL LETTER CONTENT
+             * --------------------------------------------------------------- */
+            const exactLetterText = `Hey Menahil, aka Mahii! ♡
+
+First of all, HAPPY BIRTHDAYYYY! 🎂
+
+And before anything else, I'm genuinely sorry for wishing you a little late. 🥹
+I know I should've wished you earlier, but better late than never, right? 😂
+
+I hope you had a beautiful day filled with happiness, laughter, and lots of lovely moments. I just didn't want your birthday to pass without making you feel a little special. ♡
+
+It's honestly funny how a friendship that's only a week or two old can already become this comfortable. I'm really glad we became friends.
+
+One thing I've noticed is that you have two modes: sometimes you're super sweet, and sometimes your full attitude mode suddenly activates. 😂
+
+And honestly, that's what makes talking to you fun.
+
+Also, I genuinely appreciate how quickly you reply whenever you're online. It's a small thing, but it makes conversations feel nice.
+
+I hope this new year of your life brings you lots of happiness, peace, confidence, unexpected surprises, and countless reasons to smile.
+
+Keep being the sweet, unpredictable, and wonderfully unique Mahii that you are.
+
+Wishing you the loveliest birthday and an amazing year ahead!
+
+— Suhaim ♡`;
+
+            /* ---------------------------------------------------------------
+             * 3. OPTIONAL ROYALTY-FREE MUSIC BOX SYNTH (TONE.JS)
+             * --------------------------------------------------------------- */
+            let isAudioPlaying = false;
+            let musicSynth = null;
+            let musicLoop = null;
+            let waveInterval = null;
+
+            async function initAndToggleAudio() {
+                try {
+                    if (typeof Tone === 'undefined') return;
+
+                    if (!isAudioPlaying) {
+                        await Tone.start();
+
+                        if (!musicSynth) {
+                            const reverb = new Tone.Reverb({ decay: 4, wet: 0.45 }).toDestination();
+                            musicSynth = new Tone.PolySynth(Tone.Synth, {
+                                oscillator: { type: 'sine' },
+                                envelope: { attack: 0.08, decay: 0.6, sustain: 0.2, release: 1.8 },
+                                volume: -16
+                            }).connect(reverb);
+
+                            // Gentle, original, royalty-free music-box arpeggio melody
+                            const notes = [
+                                'C5', 'E5', 'G5', 'B5', 'A5', 'G5', 'E5', 'D5',
+                                'F5', 'A5', 'C6', 'B5', 'G5', 'E5', 'D5', 'G4'
+                            ];
+                            let step = 0;
+                            musicLoop = new Tone.Loop((time) => {
+                                const note = notes[step % notes.length];
+                                musicSynth.triggerAttackRelease(note, '4n', time);
+                                step++;
+                            }, '2n');
+                        }
+
+                        Tone.Transport.bpm.value = 76;
+                        Tone.Transport.start();
+                        musicLoop.start(0);
+                        isAudioPlaying = true;
+                        audioLabel.textContent = 'Melody On';
+
+                        waveInterval = setInterval(() => {
+                            bar1.style.height = `${4 + Math.random() * 10}px`;
+                            bar2.style.height = `${6 + Math.random() * 10}px`;
+                            bar3.style.height = `${4 + Math.random() * 10}px`;
+                        }, 280);
+                    } else {
+                        if (musicLoop) musicLoop.stop();
+                        Tone.Transport.pause();
+                        isAudioPlaying = false;
+                        audioLabel.textContent = 'Sound Off';
+                        clearInterval(waveInterval);
+                        bar1.style.height = '6px';
+                        bar2.style.height = '12px';
+                        bar3.style.height = '8px';
+                    }
+                } catch (err) {
+                    console.warn('Audio toggle skipped:', err);
+                }
+            }
+
+            function playChime(notes = ['C6', 'E6', 'G6']) {
+                if (!isAudioPlaying || !musicSynth || typeof Tone === 'undefined') return;
+                try {
+                    const now = Tone.now();
+                    notes.forEach((n, idx) => {
+                        musicSynth.triggerAttackRelease(n, '8n', now + idx * 0.09);
+                    });
+                } catch (e) {}
+            }
+
+            audioToggleBtn.addEventListener('click', initAndToggleAudio);
+
+            /* ---------------------------------------------------------------
+             * 4. HELPER: CONFETTI BURST IN EDITORIAL PALETTE
+             * --------------------------------------------------------------- */
+            function triggerEditorialConfetti(originY = 0.6) {
+                if (typeof confetti !== 'function') return;
+                confetti({
+                    particleCount: 65,
+                    spread: 75,
+                    origin: { y: originY },
+                    colors: ['#F2C6CE', '#D4AF37', '#DCD2EE', '#FFFDFB', '#E8B4BE'],
+                    scalar: 0.9,
+                    gravity: 0.85,
+                    ticks: 220
+                });
+            }
+
+            /* ---------------------------------------------------------------
+             * 5. PREPARE STAGGERED LETTERS FOR "HAPPY BIRTHDAY"
+             * --------------------------------------------------------------- */
+            function buildStaggeredHeadline() {
+                const text = 'HAPPY BIRTHDAY';
+                heroHappyBirthday.innerHTML = '';
+                [...text].forEach((char) => {
+                    const span = document.createElement('span');
+                    span.className = 'char-reveal';
+                    span.innerHTML = char === ' ' ? '&nbsp;' : char;
+                    heroHappyBirthday.appendChild(span);
+                });
+            }
+            buildStaggeredHeadline();
+
+            /* ---------------------------------------------------------------
+             * 6. CINEMATIC HERO SEQUENCE
+             * --------------------------------------------------------------- */
+            function runHeroReveal() {
+                const chars = heroHappyBirthday.querySelectorAll('.char-reveal');
+
+                setTimeout(() => heroTag.classList.add('is-visible'), 150);
+
+                // 1. Staggered letter-by-letter reveal of "HAPPY BIRTHDAY"
+                chars.forEach((span, index) => {
+                    setTimeout(() => {
+                        span.classList.add('is-visible');
+                    }, 350 + index * 65);
+                });
+
+                const totalLettersDuration = 350 + chars.length * 65;
+
+                // 2. Reveal "MENAHIL" with golden glow
+                setTimeout(() => {
+                    heroMenahil.classList.add('is-visible');
+                    playChime(['G5', 'B5', 'D6', 'G6']);
+                }, totalLettersDuration + 180);
+
+                // 3. Reveal "aka Mahii ♡" and subtitle & cake
+                setTimeout(() => {
+                    heroAka.classList.add('is-visible');
+                    heroDivider.classList.add('is-visible');
+                }, totalLettersDuration + 750);
+
+                setTimeout(() => {
+                    heroSubtitle.classList.add('is-visible');
+                    cakeContainer.classList.add('is-visible');
+                }, totalLettersDuration + 1150);
+            }
+
+            /* ---------------------------------------------------------------
+             * 7. INTRO SCREEN -> MAIN SURPRISE TRANSITION
+             * --------------------------------------------------------------- */
+            openSurpriseBtn.addEventListener('click', () => {
+                triggerEditorialConfetti(0.55);
+                playChime(['C5', 'E5', 'G5', 'C6']);
+
+                introScreen.classList.add('opacity-0', 'scale-105', 'pointer-events-none');
+
+                setTimeout(() => {
+                    introScreen.classList.add('hidden');
+                    mainExperience.classList.remove('hidden');
+                    window.scrollTo({ top: 0, behavior: 'instant' });
+
+                    requestAnimationFrame(() => {
+                        mainExperience.classList.remove('opacity-0');
+                        runHeroReveal();
+                        initScrollObserver();
+                    });
+                }, 750);
+            });
+
+            /* ---------------------------------------------------------------
+             * 8. INTERACTIVE BIRTHDAY CAKE (BLOW OUT CANDLES)
+             * --------------------------------------------------------------- */
+            function handleCakeWish() {
+                if (candlesBlown) return;
+                candlesBlown = true;
+
+                candleFlames.forEach((flame) => flame.classList.add('blown-out'));
+                candleSmokes.forEach((smoke, i) => {
+                    setTimeout(() => smoke.classList.add('active'), i * 100);
+                });
+
+                triggerEditorialConfetti(0.65);
+                playChime(['E5', 'G5', 'B5', 'E6']);
+
+                cakeInstruction.textContent = 'Wish made! ✨';
+                cakeSubHint.classList.add('opacity-0');
+
+                cakeWishMessage.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    cakeWishMessage.classList.remove('opacity-0', 'translate-y-2');
+                });
+            }
+
+            cakeInteractiveArea.addEventListener('click', handleCakeWish);
+            cakeInteractiveArea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCakeWish();
+                }
+            });
+
+            /* ---------------------------------------------------------------
+             * 9. ENVELOPE OPENING & REALISTIC TYPEWRITER LETTER
+             * --------------------------------------------------------------- */
+            function startTypewriter(text, index = 0) {
+                if (index === 0) {
+                    typewriterOutput.textContent = '';
+                }
+
+                if (index < text.length) {
+                    const char = text.charAt(index);
+                    typewriterOutput.textContent += char;
+
+                    // Natural human typing cadence (slight pause on punctuation & newlines)
+                    let delay = 26;
+                    if (char === '\n') delay = 240;
+                    else if (char === '.' || char === '!' || char === '?') delay = 190;
+                    else if (char === ',') delay = 110;
+
+                    typewriterTimeout = setTimeout(() => startTypewriter(text, index + 1), delay);
+                }
+            }
+
+            function triggerOpenLetter() {
+                if (letterOpened) return;
+                letterOpened = true;
+
+                envelopeBox.classList.add('is-open');
+                openLetterBtn.classList.add('opacity-0', 'pointer-events-none');
+                playChime(['D5', 'F#5', 'A5', 'D6']);
+
+                // After envelope flap opens & letter slides up, transition to full readable stationery
+                setTimeout(() => {
+                    envelopeStage.classList.add('hidden');
+                    letterPaperStage.classList.remove('hidden');
+
+                    requestAnimationFrame(() => {
+                        letterPaperStage.classList.remove('opacity-0', 'translate-y-6');
+                        if (prefersReducedMotion) {
+                            typewriterOutput.textContent = exactLetterText;
+                        } else {
+                            startTypewriter(exactLetterText, 0);
+                        }
+                    });
+                }, 1150);
+            }
+
+            openLetterBtn.addEventListener('click', triggerOpenLetter);
+            envelopeBox.addEventListener('click', triggerOpenLetter);
+
+            /* ---------------------------------------------------------------
+             * 10. MAKE MY WISH — REALISTIC NIGHT SKY & SHOOTING STAR ENGINE
+             * --------------------------------------------------------------- */
+            const wishSection = document.getElementById('wish-section');
+            const nightSkyCanvas = document.getElementById('night-sky-canvas');
+            const nightCtx = nightSkyCanvas.getContext('2d');
+
+            let skyWidth = 0;
+            let skyHeight = 0;
+            let nightStars = [];
+            let shootingStars = [];
+            let starBoostFactor = 0; // Temporarily brightens stars when wish is made
+            let lastAmbientShooterTime = 0;
+
+            function initNightSky() {
+                if (!nightSkyCanvas || !wishSection) return;
+                const rect = wishSection.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+                skyWidth = rect.width || window.innerWidth;
+                skyHeight = rect.height || window.innerHeight;
+
+                nightSkyCanvas.width = skyWidth * dpr;
+                nightSkyCanvas.height = skyHeight * dpr;
+                nightCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+                // Generate realistic astronomical starfield:
+                // Thousands of micro-stars + medium stars + a few brighter realistic glow stars
+                const area = skyWidth * skyHeight;
+                const starTotal = Math.min(Math.max(Math.floor(area / 360), 950), 2600);
+                nightStars = [];
+
+                // Natural astronomical star color temperatures (blue-white, pure white, warm silver, faint gold/lavender)
+                const starTints = [
+                    '255, 255, 255',
+                    '226, 234, 255',
+                    '244, 238, 255',
+                    '255, 246, 232',
+                    '205, 218, 255'
+                ];
+
+                // Milky Way diagonal band concentration helper
+                const angleRad = -24 * (Math.PI / 180);
+                const cosA = Math.cos(angleRad);
+                const sinA = Math.sin(angleRad);
+
+                for (let i = 0; i < starTotal; i++) {
+                    let x, y;
+                    // 45% of stars cluster naturally along the diagonal Milky Way band
+                    if (Math.random() < 0.45) {
+                        const alongBand = (Math.random() - 0.5) * skyWidth * 1.45;
+                        // Gaussian-like spread perpendicular to the Milky Way plane
+                        const spread = ((Math.random() + Math.random() + Math.random()) / 3 - 0.5) * skyHeight * 0.55;
+                        x = skyWidth * 0.5 + alongBand * cosA - spread * sinA;
+                        y = skyHeight * 0.5 + alongBand * sinA + spread * cosA;
+                    } else {
+                        x = Math.random() * skyWidth;
+                        y = Math.random() * skyHeight;
+                    }
+
+                    const roll = Math.random();
+                    let radius, baseAlpha, hasHalo, isWishResponder;
+
+                    if (roll > 0.986) {
+                        // Rare bright hero stars with realistic soft atmospheric halo
+                        radius = 1.45 + Math.random() * 0.75;
+                        baseAlpha = 0.78 + Math.random() * 0.22;
+                        hasHalo = true;
+                        isWishResponder = true;
+                    } else if (roll > 0.90) {
+                        // Medium crisp stars
+                        radius = 0.85 + Math.random() * 0.55;
+                        baseAlpha = 0.45 + Math.random() * 0.35;
+                        hasHalo = false;
+                        isWishResponder = Math.random() > 0.5;
+                    } else {
+                        // Vast field of faint, pinpoint distant stars
+                        radius = 0.32 + Math.random() * 0.52;
+                        baseAlpha = 0.14 + Math.random() * 0.42;
+                        hasHalo = false;
+                        isWishResponder = false;
+                    }
+
+                    nightStars.push({
+                        x,
+                        y,
+                        radius,
+                        baseAlpha,
+                        hasHalo,
+                        isWishResponder,
+                        tint: starTints[Math.floor(Math.random() * starTints.length)],
+                        twinkleSpeed: 0.006 + Math.random() * 0.022,
+                        twinklePhase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            function launchShootingStar(isHeroWish = false) {
+                const startX = isHeroWish
+                    ? skyWidth * (0.12 + Math.random() * 0.35)
+                    : skyWidth * (0.05 + Math.random() * 0.75);
+                const startY = isHeroWish
+                    ? skyHeight * (0.12 + Math.random() * 0.22)
+                    : skyHeight * (0.05 + Math.random() * 0.35);
+
+                const angle = (isHeroWish ? 24 : 20 + Math.random() * 16) * (Math.PI / 180);
+                const speed = isHeroWish ? (skyWidth < 640 ? 9 : 13) : (7 + Math.random() * 5);
+
+                shootingStars.push({
+                    x: startX,
+                    y: startY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    length: isHeroWish ? (skyWidth < 640 ? 130 : 210) : (85 + Math.random() * 70),
+                    alpha: 0,
+                    life: 0,
+                    maxLife: isHeroWish ? 75 : 52,
+                    isHeroWish
+                });
+            }
+
+            function renderNightSky(timestamp) {
+                if (!nightCtx) return;
+                nightCtx.clearRect(0, 0, skyWidth, skyHeight);
+
+                // Decay the wish star-brightening boost smoothly
+                if (starBoostFactor > 0.002) {
+                    starBoostFactor *= 0.985;
+                } else {
+                    starBoostFactor = 0;
+                }
+
+                // Draw realistic twinkling stars
+                for (let i = 0; i < nightStars.length; i++) {
+                    const s = nightStars[i];
+                    s.twinklePhase += s.twinkleSpeed;
+
+                    // Gentle, natural atmospheric scintillation
+                    const twinkle = 0.72 + 0.28 * Math.sin(s.twinklePhase);
+                    const boost = s.isWishResponder ? starBoostFactor * 0.55 : starBoostFactor * 0.12;
+                    const alpha = Math.min(1, s.baseAlpha * twinkle + boost);
+
+                    // Realistic soft optical halo for brighter stars
+                    if (s.hasHalo || (s.isWishResponder && starBoostFactor > 0.15)) {
+                        const haloRadius = s.radius * (4.8 + (s.isWishResponder ? starBoostFactor * 3.5 : 0));
+                        const grad = nightCtx.createRadialGradient(s.x, s.y, 0, s.x, s.y, haloRadius);
+                        grad.addColorStop(0, `rgba(${s.tint}, ${alpha * 0.65})`);
+                        grad.addColorStop(0.35, `rgba(218, 212, 255, ${alpha * 0.22})`);
+                        grad.addColorStop(1, `rgba(${s.tint}, 0)`);
+                        nightCtx.fillStyle = grad;
+                        nightCtx.beginPath();
+                        nightCtx.arc(s.x, s.y, haloRadius, 0, Math.PI * 2);
+                        nightCtx.fill();
+                    }
+
+                    // Crisp star core
+                    nightCtx.fillStyle = `rgba(${s.tint}, ${alpha})`;
+                    nightCtx.beginPath();
+                    nightCtx.arc(s.x, s.y, s.radius + (s.isWishResponder ? starBoostFactor * 0.45 : 0), 0, Math.PI * 2);
+                    nightCtx.fill();
+                }
+
+                // Occasional faint ambient shooting star when section is in view
+                if (!prefersReducedMotion && timestamp - lastAmbientShooterTime > 6800 && shootingStars.length === 0) {
+                    const rect = wishSection.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        launchShootingStar(false);
+                        lastAmbientShooterTime = timestamp;
+                    }
+                }
+
+                // Update & draw shooting stars
+                for (let i = shootingStars.length - 1; i >= 0; i--) {
+                    const st = shootingStars[i];
+                    st.x += st.vx;
+                    st.y += st.vy;
+                    st.life++;
+
+                    const progress = st.life / st.maxLife;
+                    // Smooth fade-in and long atmospheric fade-out
+                    st.alpha = progress < 0.2
+                        ? (progress / 0.2)
+                        : Math.max(0, 1 - (progress - 0.2) / 0.8);
+
+                    const intensity = st.isHeroWish ? st.alpha : st.alpha * 0.55;
+                    const mag = Math.hypot(st.vx, st.vy) || 1;
+                    const tailX = st.x - (st.vx / mag) * st.length;
+                    const tailY = st.y - (st.vy / mag) * st.length;
+
+                    const trailGrad = nightCtx.createLinearGradient(st.x, st.y, tailX, tailY);
+                    trailGrad.addColorStop(0, `rgba(255, 255, 255, ${intensity})`);
+                    trailGrad.addColorStop(0.25, `rgba(222, 214, 255, ${intensity * 0.65})`);
+                    trailGrad.addColorStop(1, 'rgba(180, 170, 240, 0)');
+
+                    nightCtx.save();
+                    nightCtx.strokeStyle = trailGrad;
+                    nightCtx.lineWidth = st.isHeroWish ? 2.2 : 1.3;
+                    nightCtx.lineCap = 'round';
+                    nightCtx.beginPath();
+                    nightCtx.moveTo(st.x, st.y);
+                    nightCtx.lineTo(tailX, tailY);
+                    nightCtx.stroke();
+
+                    // Glowing meteor head
+                    const headRadius = st.isHeroWish ? 6 : 3.2;
+                    const headGrad = nightCtx.createRadialGradient(st.x, st.y, 0, st.x, st.y, headRadius);
+                    headGrad.addColorStop(0, `rgba(255, 255, 255, ${intensity})`);
+                    headGrad.addColorStop(0.5, `rgba(224, 216, 255, ${intensity * 0.45})`);
+                    headGrad.addColorStop(1, 'rgba(224, 216, 255, 0)');
+                    nightCtx.fillStyle = headGrad;
+                    nightCtx.beginPath();
+                    nightCtx.arc(st.x, st.y, headRadius, 0, Math.PI * 2);
+                    nightCtx.fill();
+                    nightCtx.restore();
+
+                    if (st.life >= st.maxLife) {
+                        shootingStars.splice(i, 1);
+                    }
+                }
+
+                requestAnimationFrame(renderNightSky);
+            }
+
+            function spawnWishSparkles() {
+                wishMagicLayer.innerHTML = '';
+                const count = 28;
+
+                for (let i = 0; i < count; i++) {
+                    const spark = document.createElement('div');
+                    spark.innerHTML = i % 3 === 0 ? '✦' : '·';
+                    spark.className = 'absolute select-none pointer-events-none transition-all duration-1000 ease-out';
+                    spark.style.left = '50%';
+                    spark.style.top = '56%';
+                    spark.style.fontSize = i % 3 === 0 ? `${10 + Math.random() * 10}px` : `${16 + Math.random() * 10}px`;
+                    spark.style.color = i % 2 === 0 ? '#F4F2FF' : '#D5C9FA';
+                    spark.style.textShadow = '0 0 10px rgba(220, 210, 255, 0.9)';
+                    spark.style.opacity = '1';
+                    wishMagicLayer.appendChild(spark);
+
+                    const angle = (Math.PI * 2 * i) / count + (Math.random() * 0.35);
+                    const distance = 65 + Math.random() * 165;
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance - 24;
+
+                    requestAnimationFrame(() => {
+                        spark.style.transform = `translate(${tx}px, ${ty}px) scale(${0.7 + Math.random() * 0.8})`;
+                        spark.style.opacity = '0';
+                    });
+                }
+            }
+
+            // Initialize & resize listener for the night sky canvas
+            let nightSkyResizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(nightSkyResizeTimer);
+                nightSkyResizeTimer = setTimeout(initNightSky, 200);
+            });
+            initNightSky();
+            requestAnimationFrame(renderNightSky);
+
+            makeWishBtn.addEventListener('click', () => {
+                // 1. Launch hero shooting star across the night sky
+                launchShootingStar(true);
+                // 2. Gently brighten several stars across the sky
+                starBoostFactor = 1.0;
+                // 3. Realistic silver & lavender sparkle burst
+                spawnWishSparkles();
+                playChime(['F5', 'A5', 'C6', 'E6']);
+
+                if (!wishMade) {
+                    wishMade = true;
+                    // 4. Transform button smoothly
+                    makeWishBtn.classList.add('wish-sent');
+                    makeWishBtn.innerHTML = '<span>WISH SENT TO THE UNIVERSE ✨</span>';
+
+                    // 5. Reveal moonlight message with soft fade-in
+                    setTimeout(() => {
+                        wishBlessingReveal.classList.remove('hidden');
+                        requestAnimationFrame(() => {
+                            wishBlessingReveal.classList.remove('opacity-0', 'translate-y-4');
+                        });
+                    }, 350);
+                }
+            });
+
+            /* ---------------------------------------------------------------
+             * 11. REPLAY THE SURPRISE (FULL CLEAN RESET)
+             * --------------------------------------------------------------- */
+            replayBtn.addEventListener('click', () => {
+                // Stop any active typewriter
+                if (typewriterTimeout) clearTimeout(typewriterTimeout);
+
+                // Fade out main experience
+                mainExperience.classList.add('opacity-0');
+
+                setTimeout(() => {
+                    mainExperience.classList.add('hidden');
+
+                    // Reset Hero Reveal classes
+                    [heroTag, heroMenahil, heroAka, heroDivider, heroSubtitle, cakeContainer].forEach(el => {
+                        el.classList.remove('is-visible');
+                    });
+
+                    // Reset Cake
+                    candlesBlown = false;
+                    candleFlames.forEach(f => f.classList.remove('blown-out'));
+                    candleSmokes.forEach(s => s.classList.remove('active'));
+                    cakeInstruction.textContent = 'Make a little birthday wish... 🕯️';
+                    cakeSubHint.classList.remove('opacity-0');
+                    cakeWishMessage.classList.add('hidden', 'opacity-0', 'translate-y-2');
+
+                    // Reset Envelope & Letter
+                    letterOpened = false;
+                    envelopeBox.classList.remove('is-open');
+                    openLetterBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    envelopeStage.classList.remove('hidden');
+                    letterPaperStage.classList.add('hidden', 'opacity-0', 'translate-y-6');
+                    typewriterOutput.textContent = '';
+
+                    // Reset Wish Section
+                    wishMade = false;
+                    starBoostFactor = 0;
+                    shootingStars = [];
+                    makeWishBtn.classList.remove('wish-sent');
+                    makeWishBtn.innerHTML = '<span>MAKE MY WISH ✨</span>';
+                    wishBlessingReveal.classList.add('hidden', 'opacity-0', 'translate-y-4');
+
+                    // Reset Scroll Reveal Sections
+                    document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+                        el.classList.remove('is-revealed');
+                    });
+
+                    // Show Intro Screen again
+                    window.scrollTo({ top: 0, behavior: 'instant' });
+                    introScreen.classList.remove('hidden');
+                    requestAnimationFrame(() => {
+                        introScreen.classList.remove('opacity-0', 'scale-105', 'pointer-events-none');
+                    });
+                }, 650);
+            });
+
+            /* ---------------------------------------------------------------
+             * 12. SCROLL REVEAL OBSERVER
+             * --------------------------------------------------------------- */
+            function initScrollObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-revealed');
+                        }
+                    });
+                }, { threshold: 0.14 });
+
+                document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+            }
+
+            /* ---------------------------------------------------------------
+             * 13. AMBIENT FLOATING PARTICLES CANVAS (STARS, SPARKLES, PETALS)
+             * --------------------------------------------------------------- */
+            const canvas = document.getElementById('ambient-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let width = 0;
+            let height = 0;
+
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Particle {
+                constructor() {
+                    this.reset(true);
+                }
+
+                reset(initial = false) {
+                    this.x = Math.random() * width;
+                    this.y = initial ? Math.random() * height : height + 15;
+                    this.size = 1.5 + Math.random() * 3.2;
+                    this.speedY = -(0.18 + Math.random() * 0.42);
+                    this.speedX = (Math.random() - 0.5) * 0.25;
+                    this.alpha = 0.25 + Math.random() * 0.5;
+                    this.pulseSpeed = 0.01 + Math.random() * 0.02;
+                    this.pulsePhase = Math.random() * Math.PI * 2;
+                    const palette = ['#D4AF37', '#F2C6CE', '#DCD2EE', '#E8B4BE'];
+                    this.color = palette[Math.floor(Math.random() * palette.length)];
+                    this.isStar = Math.random() > 0.45;
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.pulsePhase += this.pulseSpeed;
+
+                    if (this.y < -15 || this.x < -15 || this.x > width + 15) {
+                        this.reset(false);
+                    }
+                }
+
+                draw() {
+                    const currentAlpha = this.alpha * (0.65 + 0.35 * Math.sin(this.pulsePhase));
+                    ctx.save();
+                    ctx.globalAlpha = currentAlpha;
+                    ctx.fillStyle = this.color;
+
+                    if (this.isStar) {
+                        // Draw delicate 4-point sparkle star
+                        ctx.translate(this.x, this.y);
+                        ctx.beginPath();
+                        const r = this.size * 1.4;
+                        ctx.moveTo(0, -r);
+                        ctx.quadraticCurveTo(0, 0, r, 0);
+                        ctx.quadraticCurveTo(0, 0, 0, r);
+                        ctx.quadraticCurveTo(0, 0, -r, 0);
+                        ctx.quadraticCurveTo(0, 0, 0, -r);
+                        ctx.fill();
+                    } else {
+                        // Soft glowing orb
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            // Initialize lightweight count based on screen width
+            const particleCount = window.innerWidth < 640 ? 28 : 48;
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+                requestAnimationFrame(animateParticles);
+            }
+
+            // Respect reduced-motion preference for canvas loop
+            if (!prefersReducedMotion) {
+                animateParticles();
+            }
+        });
+    </script>
+</body>
+</html>
