@@ -933,66 +933,133 @@ Wishing you the loveliest birthday and an amazing year ahead!
 — Suhaim ♡`;
 
             /* ---------------------------------------------------------------
-             * 3. OPTIONAL ROYALTY-FREE MUSIC BOX SYNTH (TONE.JS)
-             * --------------------------------------------------------------- */
-            let isAudioPlaying = false;
-            let musicSynth = null;
-            let musicLoop = null;
-            let waveInterval = null;
 
-            async function initAndToggleAudio() {
-                try {
-                    if (typeof Tone === 'undefined') return;
+/* MUSIC CONTROLLER — CUSTOM MP3 */
 
-                    if (!isAudioPlaying) {
-                        await Tone.start();
+const customBgm = document.getElementById('custom-bgm');
 
-                        if (!musicSynth) {
-                            const reverb = new Tone.Reverb({ decay: 4, wet: 0.45 }).toDestination();
-                            musicSynth = new Tone.PolySynth(Tone.Synth, {
-                                oscillator: { type: 'sine' },
-                                envelope: { attack: 0.08, decay: 0.6, sustain: 0.2, release: 1.8 },
-                                volume: -16
-                            }).connect(reverb);
+let isAudioPlaying = false;
+let musicSynth = null;
+let waveInterval = null;
 
-                            // Gentle, original, royalty-free music-box arpeggio melody
-                            const notes = [
-                                'C5', 'E5', 'G5', 'B5', 'A5', 'G5', 'E5', 'D5',
-                                'F5', 'A5', 'C6', 'B5', 'G5', 'E5', 'D5', 'G4'
-                            ];
-                            let step = 0;
-                            musicLoop = new Tone.Loop((time) => {
-                                const note = notes[step % notes.length];
-                                musicSynth.triggerAttackRelease(note, '4n', time);
-                                step++;
-                            }, '2n');
-                        }
+function resetMusicWaves() {
+    clearInterval(waveInterval);
+    bar1.style.height = '6px';
+    bar2.style.height = '12px';
+    bar3.style.height = '8px';
+}
 
-                        Tone.Transport.bpm.value = 76;
-                        Tone.Transport.start();
-                        musicLoop.start(0);
-                        isAudioPlaying = true;
-                        audioLabel.textContent = 'Melody On';
+async function initAndToggleAudio() {
 
-                        waveInterval = setInterval(() => {
-                            bar1.style.height = `${4 + Math.random() * 10}px`;
-                            bar2.style.height = `${6 + Math.random() * 10}px`;
-                            bar3.style.height = `${4 + Math.random() * 10}px`;
-                        }, 280);
-                    } else {
-                        if (musicLoop) musicLoop.stop();
-                        Tone.Transport.pause();
-                        isAudioPlaying = false;
-                        audioLabel.textContent = 'Sound Off';
-                        clearInterval(waveInterval);
-                        bar1.style.height = '6px';
-                        bar2.style.height = '12px';
-                        bar3.style.height = '8px';
-                    }
-                } catch (err) {
-                    console.warn('Audio toggle skipped:', err);
-                }
+    if (!customBgm) {
+        audioLabel.textContent = 'Song Missing';
+        return;
+    }
+
+    if (customBgm.paused) {
+        try {
+            customBgm.volume = 0.30;
+
+            // Start both audio systems from the user's click.
+            const toneReady = typeof Tone !== 'undefined'
+                ? Tone.start().catch(() => {})
+                : Promise.resolve();
+
+            const playPromise = customBgm.play();
+
+            await playPromise;
+
+            isAudioPlaying = true;
+            audioLabel.textContent = 'Music On';
+
+            // Keep the existing small musical chimes.
+            await toneReady;
+
+            if (typeof Tone !== 'undefined' && !musicSynth) {
+                const reverb = new Tone.Reverb({
+                    decay: 4,
+                    wet: 0.45
+                }).toDestination();
+
+                musicSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: 'sine' },
+                    envelope: {
+                        attack: 0.08,
+                        decay: 0.6,
+                        sustain: 0.2,
+                        release: 1.8
+                    },
+                    volume: -16
+                }).connect(reverb);
             }
+
+            resetMusicWaves();
+
+            waveInterval = setInterval(() => {
+                bar1.style.height = `${4 + Math.random() * 10}px`;
+                bar2.style.height = `${6 + Math.random() * 10}px`;
+                bar3.style.height = `${4 + Math.random() * 10}px`;
+            }, 280);
+
+        } catch (err) {
+            isAudioPlaying = false;
+            audioLabel.textContent = 'Tap to Play';
+            resetMusicWaves();
+
+            console.error('Music playback failed:', err);
+
+        }
+
+    } else {
+        customBgm.pause();
+    }
+}
+
+// Keep the button synchronized with actual playback.
+customBgm.addEventListener('play', () => {
+    isAudioPlaying = true;
+    audioLabel.textContent = 'Music On';
+});
+
+customBgm.addEventListener('pause', () => {
+    isAudioPlaying = false;
+    audioLabel.textContent = 'Sound Off';
+    resetMusicWaves();
+});
+
+customBgm.addEventListener('error', () => {
+    isAudioPlaying = false;
+    audioLabel.textContent = 'Song Unavailable';
+    resetMusicWaves();
+});
+
+// Preserve the existing short musical effects.
+function playChime(notes = ['C6', 'E6', 'G6']) {
+
+    if (
+        !isAudioPlaying ||
+        !musicSynth ||
+        typeof Tone === 'undefined'
+    ) return;
+
+    try {
+        const now = Tone.now();
+
+        notes.forEach((note, index) => {
+            musicSynth.triggerAttackRelease(
+                note,
+                '8n',
+                now + index * 0.09
+            );
+        });
+
+    } catch (err) {
+        console.warn('Chime unavailable:', err);
+    }
+}
+
+audioToggleBtn.addEventListener('click', initAndToggleAudio);
+
 
             function playChime(notes = ['C6', 'E6', 'G6']) {
                 if (!isAudioPlaying || !musicSynth || typeof Tone === 'undefined') return;
