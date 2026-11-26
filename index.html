@@ -1142,7 +1142,7 @@ audioToggleBtn.addEventListener('click', initAndToggleAudio);
             /* ---------------------------------------------------------------
              * 7. INTRO SCREEN -> MAIN SURPRISE TRANSITION
              * --------------------------------------------------------------- */
-            openSurpriseBtn.addEventListener('click', () => {
+            openSurpriseBtn.addEventListener('click', () => { initAndToggleAudio();
                 triggerEditorialConfetti(0.55);
                 playChime(['C5', 'E5', 'G5', 'C6']);
 
